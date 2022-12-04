@@ -1,10 +1,13 @@
 package com.zouhair.magicalium_g;
 
 import com.mojang.logging.LogUtils;
+import com.zouhair.magicalium_g.blocks.Magicalium_GBlocks;
+import com.zouhair.magicalium_g.items.Magicalium_GItems;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -27,7 +30,12 @@ public class Magicalium_g
     public static final String MOD_ID = "magicalium_g";
 
     public Magicalium_g() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        Magicalium_GItems.register(eventBus);
+        Magicalium_GBlocks.register(eventBus);
+
+        eventBus.addListener(this::setup);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

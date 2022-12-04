@@ -1,0 +1,15 @@
+{
+  "item.magicalium_g.lignite_coal": "Lignite Coal",
+  "item.magicalium_g.bituminous_coal": "Bituminous Coal",
+  "item.magicalium_g.anthracite_coal": "Anthracite Coal",
+
+  "block.magicalium_g.lignite_coal_block": "Lignite Coal Block",
+  "block.magicalium_g.bituminous_coal_block": "Bituminous Coal Block",
+  "block.magicalium_g.anthracite_coal_block": "Anthracite Coal Block",
+  "block.magicalium_g.lignite_coal_ore": "Lignite Coal Ore",
+  "block.magicalium_g.bituminous_coal_ore": "Bituminous Coal Ore",
+  "block.magicalium_g.anthracite_coal_ore": "Anthracite Coal Ore",
+  "block.magicalium_g.deepslate_lignite_coal_ore": "Deepslate Lignite Coal Ore",
+  "block.magicalium_g.deepslate_bituminous_coal_ore": "Deepslate Bituminous Coal Ore",
+  "block.magicalium_g.deepslate_anthracite_coal_ore": "Deepslate Anthracite Coal Ore"
+}
