@@ -11,5 +11,9 @@
   "block.magicalium_g.anthracite_coal_ore": "Anthracite Coal Ore",
   "block.magicalium_g.deepslate_lignite_coal_ore": "Deepslate Lignite Coal Ore",
   "block.magicalium_g.deepslate_bituminous_coal_ore": "Deepslate Bituminous Coal Ore",
-  "block.magicalium_g.deepslate_anthracite_coal_ore": "Deepslate Anthracite Coal Ore"
+  "block.magicalium_g.deepslate_anthracite_coal_ore": "Deepslate Anthracite Coal Ore",
+
+
+  "itemGroup.magicalium_g_ores": "Magicalium_G Ores",
+  "itemGroup.magicalium_g_materials": "Magicalium_G Materials"
 }
