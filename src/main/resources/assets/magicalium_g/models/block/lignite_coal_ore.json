@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "magicalium_g:block/lignite_coal_ore"
+    "all": "magicalium_g:block/ore/lignite_coal"
   }
 }

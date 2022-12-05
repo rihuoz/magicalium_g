@@ -20,6 +20,14 @@ public class Magicalium_GBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, Magicalium_g.MOD_ID);
 
+
+    public static final RegistryObject<Block> BRONZE_BOILER = registerBlock("bronze_boiler",
+            () -> new MachineBlocks(BlockBehaviour.Properties.of(Material.METAL)
+                    .strength(5.0f, 6.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_MACHINE_TAB);
+
+    // storage blocks
     public static final RegistryObject<Block> LIGNITE_COAL_BLOCK = registerBlock("lignite_coal_block",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(5.0f, 6.0f)
@@ -35,6 +43,10 @@ public class Magicalium_GBlocks {
                     .strength(5.0f, 6.0f)
                     .requiresCorrectToolForDrops()
             ), Magicalium_GCreativeTabs.MAGICALIUM_G_MATERIAL_TAB);
+
+
+    // ore blocks
+        // stone ores
     public static final RegistryObject<Block> LIGNITE_COAL_ORE = registerBlock("lignite_coal_ore",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(4.5f, 3.0f)
@@ -50,6 +62,37 @@ public class Magicalium_GBlocks {
                     .strength(4.5f, 3.0f)
                     .requiresCorrectToolForDrops()
             ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> MAGNETITE_ORE = registerBlock("magnetite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(4.5f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> TELLURIC_IRON_ORE = registerBlock("telluric_iron_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(4.5f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> VANADIUM_MAGNETITE_ORE = registerBlock("vanadium_magnetite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(4.5f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> BROWN_LIMONITE_ORE = registerBlock("brown_limonite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(4.5f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> YELLOW_LIMONITE_ORE = registerBlock("yellow_limonite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(4.5f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> BANDED_IRON_ORE = registerBlock("banded_iron_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(4.5f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+        // deepslate ores
     public static final RegistryObject<Block> DEEPSLATE_LIGNITE_COAL_ORE = registerBlock("deepslate_lignite_coal_ore",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(6.0f, 3.0f)
@@ -61,6 +104,36 @@ public class Magicalium_GBlocks {
                     .requiresCorrectToolForDrops()
             ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
     public static final RegistryObject<Block> DEEPSLATE_ANTHRACITE_COAL_ORE = registerBlock("deepslate_anthracite_coal_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(6.0f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> DEEPSLATE_MAGNETITE_ORE = registerBlock("deepslate_magnetite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(6.0f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> DEEPSLATE_TELLURIC_IRON_ORE = registerBlock("deepslate_telluric_iron_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(6.0f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> DEEPSLATE_VANADIUM_MAGNETITE_ORE = registerBlock("deepslate_vanadium_magnetite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(6.0f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> DEEPSLATE_BROWN_LIMONITE_ORE = registerBlock("deepslate_brown_limonite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(6.0f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> DEEPSLATE_YELLOW_LIMONITE_ORE = registerBlock("deepslate_yellow_limonite_ore",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(6.0f, 3.0f)
+                    .requiresCorrectToolForDrops()
+            ), Magicalium_GCreativeTabs.MAGICALIUM_G_ORE_TAB);
+    public static final RegistryObject<Block> DEEPSLATE_BANDED_IRON_ORE = registerBlock("deepslate_banded_iron_ore",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(6.0f, 3.0f)
                     .requiresCorrectToolForDrops()

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "magicalium_g:block/ore/deepslate_vanadium_magnetite"
+  }
+}

@@ -18,4 +18,11 @@ public class Magicalium_GCreativeTabs {
             return new ItemStack(Magicalium_GItems.ANTHRACITE_COAL.get());
         }
     };
+
+    public static final CreativeModeTab MAGICALIUM_G_MACHINE_TAB = new CreativeModeTab("magicalium_g_machines") {
+        @Override
+        public ItemStack makeIcon() {
+            return new ItemStack(Magicalium_GBlocks.BRONZE_BOILER.get());
+        }
+    };
 }
