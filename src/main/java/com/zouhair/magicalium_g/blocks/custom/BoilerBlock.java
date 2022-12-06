@@ -1,27 +1,31 @@
-package com.zouhair.magicalium_g.blocks;
+package com.zouhair.magicalium_g.blocks.custom;
 
+import com.zouhair.magicalium_g.blocks.entity.InitBlockEntities;
+import com.zouhair.magicalium_g.blocks.entity.custom.BoilerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class MachineBlocks extends Block {
+public class BoilerBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
-    public MachineBlocks(Properties pProperties) {
+    public BoilerBlock(Properties pProperties) {
         super(pProperties.lightLevel(state -> {
             return state.getValue(LIT) == true ? 15 : 0 ;
         }));
@@ -55,16 +59,50 @@ public class MachineBlocks extends Block {
         super.createBlockStateDefinition(pBuilder);
     }
 
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new BoilerBlockEntity(pPos, pState);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (pState.getBlock() != pNewState.getBlock()) {
+            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
+            if (blockEntity instanceof BoilerBlockEntity){
+                ((BoilerBlockEntity) blockEntity).drops();
+            }
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (!pLevel.isClientSide() && pHand == InteractionHand.MAIN_HAND) {
-                pLevel.setBlock(pPos, pState.cycle(LIT), 4);
-                System.out.println("block clicked!");
-                System.out.println("lit" + pState.getValue(LIT));
-                return InteractionResult.CONSUME;
+        if (!pLevel.isClientSide()) {
+            BlockEntity entity = pLevel.getBlockEntity(pPos);
+            if (entity instanceof BoilerBlockEntity) {
+                NetworkHooks.openGui((ServerPlayer) pPlayer, (BoilerBlockEntity) entity, pPos);
+            }else {
+                throw new IllegalStateException("Our Container provider is missing!");
+            }
         }
 
-        return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
+        return InteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return createTickerHelper(pBlockEntityType, InitBlockEntities.BRONZE_BOILER_ENTITY.get(),
+               BoilerBlockEntity::tick );
     }
 }

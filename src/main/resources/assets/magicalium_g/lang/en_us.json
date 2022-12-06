@@ -1,9 +1,14 @@
 {
+  "item.magicalium_g.stone_hammer": "Stone Hammer",
+  "item.magicalium_g.iron_hammer": "Iron Hammer",
+
   "item.magicalium_g.lignite_coal": "Lignite Coal",
   "item.magicalium_g.bituminous_coal": "Bituminous Coal",
   "item.magicalium_g.anthracite_coal": "Anthracite Coal",
 
   "block.magicalium_g.bronze_boiler": "Bronze Boiler",
+
+  "block.magicalium_g.bronze_bench": "Bronze Bench",
 
   "block.magicalium_g.lignite_coal_block": "Lignite Coal Block",
   "block.magicalium_g.bituminous_coal_block": "Bituminous Coal Block",
@@ -34,5 +39,6 @@
 
   "itemGroup.magicalium_g_ores": "Magicalium_g Ores",
   "itemGroup.magicalium_g_materials": "Magicalium_g Materials",
-  "itemGroup.magicalium_g_machines": "Magicalium_g Machines"
+  "itemGroup.magicalium_g_machines": "Magicalium_g Machines",
+  "itemGroup.magicalium_g_tools": "Magicalium_g Tools"
 }
