@@ -1,4 +1,4 @@
-package com.zouhair.magicalium_g.screen.slot;
+package com.zouhair.magicalium_g.screens.slot;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;

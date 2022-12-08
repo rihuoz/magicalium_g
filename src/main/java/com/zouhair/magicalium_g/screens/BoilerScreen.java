@@ -1,4 +1,4 @@
-package com.zouhair.magicalium_g.screen;
+package com.zouhair.magicalium_g.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

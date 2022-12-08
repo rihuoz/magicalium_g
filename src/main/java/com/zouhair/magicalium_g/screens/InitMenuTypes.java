@@ -1,4 +1,4 @@
-package com.zouhair.magicalium_g.screen;
+package com.zouhair.magicalium_g.screens;
 
 import com.zouhair.magicalium_g.Magicalium_g;
 import net.minecraft.world.inventory.AbstractContainerMenu;

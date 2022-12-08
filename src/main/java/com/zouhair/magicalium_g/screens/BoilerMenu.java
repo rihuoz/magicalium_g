@@ -1,14 +1,12 @@
-package com.zouhair.magicalium_g.screen;
+package com.zouhair.magicalium_g.screens;
 
 import com.zouhair.magicalium_g.blocks.InitBlocks;
 import com.zouhair.magicalium_g.blocks.entity.custom.BoilerBlockEntity;
-import com.zouhair.magicalium_g.screen.slot.ResultSlot;
+import com.zouhair.magicalium_g.screens.slot.ResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,17 +16,20 @@ import net.minecraftforge.items.SlotItemHandler;
 public class BoilerMenu extends AbstractContainerMenu {
     private final BoilerBlockEntity blockEntity;
     private final Level level;
+    private final ContainerData data;
 
     public BoilerMenu(int pContainerId, Inventory inventory, FriendlyByteBuf extraData) {
-        this(pContainerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(pContainerId, inventory, inventory.player.level.getBlockEntity(extraData.readBlockPos()),
+                new SimpleContainerData(2));
     }
 
-    public BoilerMenu(int pContainerId, Inventory inventory, BlockEntity entity) {
+    public BoilerMenu(int pContainerId, Inventory inventory, BlockEntity entity, ContainerData data ) {
         super(InitMenuTypes.BOILER_MENU.get(), pContainerId);
 
         checkContainerSize(inventory, 3);
         blockEntity = (BoilerBlockEntity) entity;
         this.level = inventory.player.level;
+        this.data = data;
 
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
@@ -39,7 +40,10 @@ public class BoilerMenu extends AbstractContainerMenu {
 
             this.addSlot(new ResultSlot(itemHandler, 2, 116, 20));
         });
+        addDataSlots(data);
+
     }
+
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     private static final int HOTBAR_SLOT_COUNT = 9;
