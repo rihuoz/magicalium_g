@@ -26,6 +26,14 @@ public class BoilerScreen extends AbstractContainerScreen<BoilerMenu> {
         int y = (height - imageHeight) / 2;
 
         this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
+
+        renderProgressArrow(pPoseStack, x, y);
+    }
+
+    private void renderProgressArrow(PoseStack pPoseStack, int x, int y) {
+        if(menu.isCrafting()) {
+            blit(pPoseStack, x + 57, y + 42, 178, 2, menu.getScaleProgress(), 7);
+        }
     }
 
     @Override

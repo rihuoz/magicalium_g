@@ -2,6 +2,7 @@ package com.zouhair.magicalium_g.setup;
 
 import com.zouhair.magicalium_g.blocks.InitBlocks;
 import com.zouhair.magicalium_g.blocks.entity.InitBlockEntities;
+import com.zouhair.magicalium_g.fluids.InitFluids;
 import com.zouhair.magicalium_g.items.InitItems;
 import com.zouhair.magicalium_g.recipes.InitRecipes;
 import com.zouhair.magicalium_g.screens.InitMenuTypes;
@@ -15,6 +16,8 @@ public class InitRegister {
 
         InitBlockEntities.register(eventBus);
         InitMenuTypes.register(eventBus);
+
+        InitFluids.register(eventBus);
 
         InitRecipes.register(eventBus);
     }

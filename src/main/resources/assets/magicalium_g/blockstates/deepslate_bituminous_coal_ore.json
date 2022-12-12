@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model":  "magicalium_g:block/deepslate_bituminous_coal_ore"}
+    "": { "model":  "magicalium_g:block/ores/deepslate/deepslate_bituminous_coal_ore"}
   }
 }

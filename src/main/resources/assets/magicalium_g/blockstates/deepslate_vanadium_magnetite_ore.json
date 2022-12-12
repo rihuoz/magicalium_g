@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model":  "magicalium_g:block/deepslate_vanadium_magnetite_ore"}
+    "": { "model":  "magicalium_g:block/ores/deepslate/deepslate_vanadium_magnetite_ore"}
   }
 }

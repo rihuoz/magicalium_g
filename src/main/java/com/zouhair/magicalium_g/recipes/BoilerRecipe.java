@@ -11,12 +11,16 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BoilerRecipe  implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
     private final ItemStack output;
     private final NonNullList<Ingredient> recipeItems;
+    private final int INPUT_SLOT = 0;
+    private final int FUEL_SLOT = 1;
+    private final int OUTPUT_SLOT = 2;
 
     public BoilerRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems) {
         this.id = id;
@@ -26,12 +30,15 @@ public class BoilerRecipe  implements Recipe<SimpleContainer> {
 
     //  used to check whether the recipe can be used
     @Override
-    public boolean matches(SimpleContainer pContainer, Level pLevel) {
-        return recipeItems.get(0).test(pContainer.getItem(0));
+    public boolean matches(@NotNull SimpleContainer pContainer, Level pLevel) {
+        if(pLevel.isClientSide()){
+            return false;
+        }
+        return recipeItems.get(INPUT_SLOT).test(pContainer.getItem(INPUT_SLOT));
     }
 
     @Override
-    public ItemStack assemble(SimpleContainer pContainer) {
+    public @NotNull ItemStack assemble(@NotNull SimpleContainer pContainer) {
         return output.copy();
     }
 
@@ -41,32 +48,32 @@ public class BoilerRecipe  implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public ItemStack getResultItem() {
+    public @NotNull ItemStack getResultItem() {
         return output;
     }
 
     @Override
-    public ResourceLocation getId() {
+    public @NotNull ResourceLocation getId() {
         return id;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return Serializer.INSTANCE;
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
+    public @NotNull NonNullList<Ingredient> getIngredients() {
         return recipeItems;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public @NotNull RecipeType<?> getType() {
         return Type.INSTANCE;
     }
 
     public static class Type implements RecipeType<BoilerRecipe> {
-        private Type () { };
+        private Type () { }
         public static final Type INSTANCE = new Type();
         public static final String ID = "boiling";
     }
@@ -75,13 +82,36 @@ public class BoilerRecipe  implements Recipe<SimpleContainer> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID =
                 new ResourceLocation(Magicalium_g.MOD_ID, "boiling");
+        /* the vanilla SimpleCookingSerializer
+
+      public T fromJson(ResourceLocation pRecipeId, JsonObject pJson) {
+      String s = GsonHelper.getAsString(pJson, "group", "");
+      JsonElement jsonelement = (JsonElement)(GsonHelper.isArrayNode(pJson, "ingredient") ? GsonHelper.getAsJsonArray(pJson, "ingredient") : GsonHelper.getAsJsonObject(pJson, "ingredient"));
+      Ingredient ingredient = Ingredient.fromJson(jsonelement);
+      //Forge: Check if primitive string to keep vanilla or a object which can contain a count field.
+      if (!pJson.has("result")) throw new com.google.gson.JsonSyntaxException("Missing result, expected to find a string or object");
+      ItemStack itemstack;
+      if (pJson.get("result").isJsonObject()) itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(pJson, "result"));
+      else {
+      String s1 = GsonHelper.getAsString(pJson, "result");
+      ResourceLocation resourcelocation = new ResourceLocation(s1);
+      itemstack = new ItemStack(Registry.ITEM.getOptional(resourcelocation).orElseThrow(() -> {
+         return new IllegalStateException("Item: " + s1 + " does not exist");
+      }));
+      }
+      float f = GsonHelper.getAsFloat(pJson, "experience", 0.0F);
+      int i = GsonHelper.getAsInt(pJson, "cookingtime", this.defaultCookingTime);
+      return this.factory.create(pRecipeId, s, ingredient, itemstack, f, i);
+   }*/
 
         // 	This decodes a Recipe from JSON
         @Override
-        public BoilerRecipe fromJson(ResourceLocation pRecipeId, JsonObject json) {
+        public @NotNull BoilerRecipe fromJson(@NotNull ResourceLocation pRecipeId, JsonObject json) {
+
             ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
             JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
             NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
+            // FluidStack fluid = FluidJSONUtil.readFluid(json.get("fluid").getAsJsonObject());
 
             for (int i=0; i < inputs.size(); i++) {
                 inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
@@ -132,8 +162,6 @@ public class BoilerRecipe  implements Recipe<SimpleContainer> {
         public Class<RecipeSerializer<?>> getRegistryType() {
             return Serializer.castClass(RecipeSerializer.class);
         }
-
-
 
         @SuppressWarnings("unchecked") // Need this wrapper, because generics
         private static <G> Class<G> castClass(Class<?> cls) {

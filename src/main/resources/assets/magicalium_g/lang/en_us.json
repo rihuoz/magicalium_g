@@ -1,4 +1,6 @@
 {
+  "item.magicalium_g.steam_bucket": "Steam Bucket",
+
   "item.magicalium_g.stone_hammer": "Stone Hammer",
   "item.magicalium_g.iron_hammer": "Iron Hammer",
 
@@ -10,6 +12,7 @@
 
   "block.magicalium_g.bronze_bench": "Bronze Bench",
 
+  "block.magicalium_g.test_ol_block": "Test Overlay Block",
   "block.magicalium_g.lignite_coal_block": "Lignite Coal Block",
   "block.magicalium_g.bituminous_coal_block": "Bituminous Coal Block",
   "block.magicalium_g.anthracite_coal_block": "Anthracite Coal Block",
@@ -36,6 +39,7 @@
   "block.magicalium_g.deepslate_yellow_limonite_ore": "Deepslate Yellow Limonite Ore",
   "block.magicalium_g.deepslate_banded_iron_ore": "Deepslate Banded Iron Ore",
 
+  "container.magicalium_g.boiler": "Boiler",
 
   "itemGroup.magicalium_g_ores": "Magicalium_g Ores",
   "itemGroup.magicalium_g_materials": "Magicalium_g Materials",

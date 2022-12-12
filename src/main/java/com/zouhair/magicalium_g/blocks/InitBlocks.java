@@ -35,6 +35,11 @@ public class InitBlocks {
             ), InitTabs.MAGICALIUM_G_MACHINE_TAB);
 
     // storage blocks
+    public static final RegistryObject<Block> TEST_OL_BLOCK = registerBlock("test_ol_block",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+                    .strength(5.0f, 6.0f)
+                    .requiresCorrectToolForDrops()
+            ), InitTabs.MAGICALIUM_G_MATERIAL_TAB);
     public static final RegistryObject<Block> LIGNITE_COAL_BLOCK = registerBlock("lignite_coal_block",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
                     .strength(5.0f, 6.0f)

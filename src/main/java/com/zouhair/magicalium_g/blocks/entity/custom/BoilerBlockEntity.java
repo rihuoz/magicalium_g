@@ -1,14 +1,15 @@
 package com.zouhair.magicalium_g.blocks.entity.custom;
 
-import com.zouhair.magicalium_g.blocks.custom.BoilerBlock;
+import com.zouhair.magicalium_g.Magicalium_g;
 import com.zouhair.magicalium_g.blocks.entity.InitBlockEntities;
-import com.zouhair.magicalium_g.recipes.BoilerRecipe;
+import com.zouhair.magicalium_g.items.InitItems;
 import com.zouhair.magicalium_g.screens.BoilerMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -17,56 +18,58 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 
 public class BoilerBlockEntity extends BlockEntity implements MenuProvider {
-    private int progress = 0;
-    private int maxProgress = 72;
-    protected final ContainerData data = createData();
-    private final ItemStackHandler itemHandler = createItemHandler();
-    private LazyOptional<IItemHandler> lazyItemHandler;
+    public static final int ISHandler_SIZE = 3;
+    public static final int INPUT_SLOT = 0;
+    public static final int FUEL_SLOT = 1;
+    public static final int OUTPUT_SLOT = 2;
+    public static final Component TITLE = new TranslatableComponent("container." + Magicalium_g.MOD_ID + ".boiler");
 
+    public final ItemStackHandler itemStackHandler = createItemStackHandler(ISHandler_SIZE);
+    public LazyOptional<ItemStackHandler> lazyItemHandler = LazyOptional.empty();
+    protected final ContainerData data;
+
+    private int progress = 0;
+    private int maxProgress = 100;
     public BoilerBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(InitBlockEntities.BRONZE_BOILER_ENTITY.get(), pPos, pBlockState);
-    }
-
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent("Boiler");
+        data = createData();
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new BoilerMenu(pContainerId, pPlayerInventory, this, data);
+        return new BoilerMenu(pContainerId, pPlayerInventory, this, this.data);
     }
+
+    @Override
+    public Component getDisplayName() {
+        return TITLE;
+    }
+
+    // Capability
 
     @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-            return lazyItemHandler.cast();
-        }
-        // we can check for other Capabilities and add them HERE!
-        return super.getCapability(cap, side);
+        return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? lazyItemHandler.cast() :
+                super.getCapability(cap, side);
     }
 
     @Override
     public void onLoad() {
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
+        lazyItemHandler = LazyOptional.of(() -> itemStackHandler);
     }
 
     @Override
@@ -75,146 +78,125 @@ public class BoilerBlockEntity extends BlockEntity implements MenuProvider {
         lazyItemHandler.invalidate();
     }
 
-    // the load & saveAdditional : are used to read and save data form and to save files  called with chunks
-    // on every data change setChanged() needs to be called
     @Override
-    protected void saveAdditional(CompoundTag pTag) { // save data
-        pTag.put("inventory", itemHandler.serializeNBT());
-        pTag.putInt("boiler_block.progress", progress);
+    protected void saveAdditional(CompoundTag pTag) {
+        pTag.put("inventory", itemStackHandler.serializeNBT());
+        pTag.putInt("boiler_block.progress", this.progress);
+
+        super.saveAdditional(pTag);
     }
+
     @Override
-    public void load(CompoundTag pTag) { // load data
-        if(pTag.contains("inventory")){
-            itemHandler.deserializeNBT(pTag.getCompound("inventory"));
-        }
-        if (pTag.contains("boiler_block.progress")) {
-            progress = pTag.getInt("boiler_block.progress");
-        }
+    public void load(CompoundTag pTag) {
         super.load(pTag);
+        itemStackHandler.deserializeNBT(pTag);
+        progress = pTag.getInt("boiler_block.progress");
     }
 
-    // tick Method is called to make the BlockEntity a Ticking BlockEntity, and it will preform actions on every tick
-    // But it has to be called in the Block (that this BlockEntity is assigned to) with the getTicker
-    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, BoilerBlockEntity pBlockEntity) {
-        if(hasRecipe(pBlockEntity)) {
-            pBlockEntity.progress++;
-            setChanged(pLevel, pPos, pState); // in case we logged out
-
-            if(pBlockEntity.progress > pBlockEntity.maxProgress) {
-                craftItem(pBlockEntity);
-                pState.setValue(BoilerBlock.LIT, true);
-            }
-        } else {
-            pBlockEntity.resetProgress();
-            pState.setValue(BoilerBlock.LIT, false);
-            setChanged(pLevel, pPos, pState);
-        }
-    }
-
-
-    // helper Methods:
-    private static boolean hasRecipe(BoilerBlockEntity entity) {
-        Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
-
-        assert level != null;
-        Optional<BoilerRecipe> match = level.getRecipeManager()
-                .getRecipeFor(BoilerRecipe.Type.INSTANCE, inventory, level);
-
-
-        System.out.println("match.isPresent:" + match.isPresent());
-
-        return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
-                && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasFuelInFuelSlot(entity);
-    }
-
-
-    private static boolean hasFuelInFuelSlot(BoilerBlockEntity entity) {
-        return entity.itemHandler.getStackInSlot(1).getItem() == Items.COAL_BLOCK;
-    }
-
-    private static void craftItem(BoilerBlockEntity entity) {
-        Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
-
-        assert level != null;
-        Optional<BoilerRecipe> match = level.getRecipeManager()
-                .getRecipeFor(BoilerRecipe.Type.INSTANCE, inventory, level);
-
-        if (match.isPresent()){
-            entity.itemHandler.extractItem(0, 1, false);
-            entity.itemHandler.extractItem(1, 1, false);
-
-            entity.itemHandler.setStackInSlot(2, new ItemStack(Items.DIAMOND,
-                    entity.itemHandler.getStackInSlot(2).getCount() + 1));
-
-            entity.resetProgress();
-        }
-    }
-
-    private ItemStackHandler createItemHandler() {
+    // CUSTOM methods
+    private ItemStackHandler createItemStackHandler(int size) {
         return new ItemStackHandler(3) {
             @Override
             protected void onContentsChanged(int slot) {
-                setChanged(); // to make sure the block is saved on change
+                setChanged();
             }
         };
     }
     private ContainerData createData() {
         return new ContainerData() {
-            public int get(int index) {
-                switch (index) {
-                    case 0:
-                        return BoilerBlockEntity.this.progress;
-                    case 1:
-                        return BoilerBlockEntity.this.maxProgress;
-                    default:
-                        return 0;
+            @Override
+            public int get(int pIndex) {
+                return switch (pIndex) {
+                    case 0 -> BoilerBlockEntity.this.progress;
+                    case 1 -> BoilerBlockEntity.this.maxProgress;
+                    default -> 0;
+                };
+            }
+
+            @Override
+            public void set(int pIndex, int pValue) {
+                switch (pIndex) {
+                    case 0 -> BoilerBlockEntity.this.progress = pValue;
+                    case 1 -> BoilerBlockEntity.this.maxProgress = pValue;
                 }
             }
 
-            public void set(int index, int value) {
-                switch (index) {
-                    case 0:
-                        BoilerBlockEntity.this.progress = value;
-                        break;
-                    case 1:
-                        BoilerBlockEntity.this.maxProgress = value;
-                        break;
-                }
-            }
-
+            @Override
             public int getCount() {
                 return 2;
             }
         };
     }
 
-    public void drops() {
-        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for(int i=0; i<itemHandler.getSlots(); i++) {
-            inventory.setItem(i, itemHandler.getStackInSlot(i));
+    public void drop() {
+        SimpleContainer inventory = new SimpleContainer(ISHandler_SIZE);
+        for(int i=0; i<ISHandler_SIZE; i++) {
+            inventory.setItem(i, itemStackHandler.getStackInSlot(i));
         }
+
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-    private void resetProgress() {
+    public static void tick(Level level, BlockPos blockPos, BlockState blockState, BoilerBlockEntity blockEntity) {
+        if(level.isClientSide()) {
+            return;
+        }
+
+        if(hasRecipe(blockEntity)) {
+            blockEntity.progress++;
+            setChanged(level, blockPos, blockState);
+
+            if(blockEntity.progress >= blockEntity.maxProgress) {
+                craftItem(blockEntity);
+                blockEntity.restProgress();
+            }
+        }
+    }
+
+    private void restProgress() {
         this.progress = 0;
     }
-    private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack output) {
-        return inventory.getItem(2).getItem() == output.getItem() || inventory.getItem(2).isEmpty();
+
+    private static void craftItem(BoilerBlockEntity blockEntity) {
+        if(hasRecipe(blockEntity)){
+            blockEntity.itemStackHandler.extractItem(INPUT_SLOT, 1, false);
+            blockEntity.itemStackHandler.extractItem(FUEL_SLOT, 1, false);
+
+            blockEntity.itemStackHandler.setStackInSlot(OUTPUT_SLOT, new ItemStack(InitItems.LIGNITE_COAL.get(),
+                    blockEntity.itemStackHandler.getStackInSlot(OUTPUT_SLOT).getCount() + 1));
+        }
+    }
+
+    private static boolean hasRecipe(BoilerBlockEntity blockEntity) {
+        SimpleContainer inventory = new SimpleContainer(ISHandler_SIZE);
+        for(int i = 0; i< ISHandler_SIZE; i++) {
+            inventory.setItem(i, blockEntity.itemStackHandler.getStackInSlot(i));
+        }
+
+
+        return hasInput(blockEntity) && hasFuel(blockEntity) &&
+                canInsertAmountIntoOutputSlot(inventory) &&
+                canInsertItemIntoOutputSlot(inventory, new ItemStack(InitItems.LIGNITE_COAL.get(), 1));
+
+    }
+
+    private static boolean hasFuel(BoilerBlockEntity blockEntity) {
+        return blockEntity.itemStackHandler.getStackInSlot(FUEL_SLOT).getItem() ==
+                InitItems.BITUMINOUS_COAL.get();
+    }
+
+    private static boolean hasInput(BoilerBlockEntity blockEntity) {
+        return blockEntity.itemStackHandler.getStackInSlot(INPUT_SLOT).getItem() ==
+                InitItems.ANTHRACITE_COAL.get();
+    }
+
+    private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack itemStack) {
+        return inventory.getItem(OUTPUT_SLOT).getItem() == itemStack.getItem() ||
+                inventory.getItem(OUTPUT_SLOT).isEmpty();
     }
 
     private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
-        return inventory.getItem(2).getMaxStackSize() > inventory.getItem(2).getCount();
+            return inventory.getItem(OUTPUT_SLOT).getMaxStackSize() >
+                    inventory.getItem(OUTPUT_SLOT).getCount();
     }
 }

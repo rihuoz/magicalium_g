@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class InitMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENUS =
-            DeferredRegister.create(ForgeRegistries.CONTAINERS, Magicalium_g.MOD_ID);
+            DeferredRegister.create(ForgeRegistries.CONTAINERS , Magicalium_g.MOD_ID);
 
     public static final RegistryObject<MenuType<BoilerMenu>> BOILER_MENU =
             registerMenuType(BoilerMenu::new, "boiler_menu");

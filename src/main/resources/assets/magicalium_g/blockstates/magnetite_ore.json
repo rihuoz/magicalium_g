@@ -1,5 +1,5 @@
 {
   "variants": {
-    "": { "model":  "magicalium_g:block/magnetite_ore"}
+    "": { "model":  "magicalium_g:block/ores/stone/magnetite_ore"}
   }
 }

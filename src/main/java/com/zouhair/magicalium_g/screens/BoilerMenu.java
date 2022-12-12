@@ -26,7 +26,7 @@ public class BoilerMenu extends AbstractContainerMenu {
     public BoilerMenu(int pContainerId, Inventory inventory, BlockEntity entity, ContainerData data ) {
         super(InitMenuTypes.BOILER_MENU.get(), pContainerId);
 
-        checkContainerSize(inventory, 3);
+        checkContainerSize(inventory, BoilerBlockEntity.ISHandler_SIZE);
         blockEntity = (BoilerBlockEntity) entity;
         this.level = inventory.player.level;
         this.data = data;
@@ -54,7 +54,7 @@ public class BoilerMenu extends AbstractContainerMenu {
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
-    private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = BoilerBlockEntity.ISHandler_SIZE;  // must be the number of slots you have!
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
@@ -107,5 +107,17 @@ public class BoilerMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 144));
         }
+    }
+
+    public boolean isCrafting(){
+        return data.get(0) > 0;
+    }
+
+    public int getScaleProgress() {
+        int progress = data.get(0);
+        int maxProgress = data.get(1);
+        int arrowSize = 51;
+
+        return maxProgress != 0 && progress != 0 ? progress * arrowSize / maxProgress : 0;
     }
 }

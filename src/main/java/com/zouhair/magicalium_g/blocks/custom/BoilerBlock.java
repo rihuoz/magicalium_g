@@ -25,9 +25,10 @@ import org.jetbrains.annotations.Nullable;
 public class BoilerBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
+
     public BoilerBlock(Properties pProperties) {
         super(pProperties.lightLevel(state -> {
-            return state.getValue(LIT) == true ? 15 : 0 ;
+            return state.getValue(LIT) == true ? 15 : 0;
         }));
 
 
@@ -42,22 +43,8 @@ public class BoilerBlock extends BaseEntityBlock {
         pBuilder.add(FACING, LIT);
         super.createBlockStateDefinition(pBuilder);
     }
+    // player interaction with "this" handling use() here
 
-    // player interaction with "this" handling
-    @SuppressWarnings("deprecation")
-    @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        if (!pLevel.isClientSide()) {
-            BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if (entity instanceof BoilerBlockEntity) {
-                NetworkHooks.openGui((ServerPlayer) pPlayer, (BoilerBlockEntity) entity, pPos);
-            }else {
-                throw new IllegalStateException("Our Container provider is missing!");
-            }
-        }
-
-        return InteractionResult.sidedSuccess(pLevel.isClientSide());
-    }
 
     // getStateForPlacement(), mirror(), & rotate() are used for the directional Block handling
     @Nullable
@@ -65,47 +52,62 @@ public class BoilerBlock extends BaseEntityBlock {
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public BlockState mirror(BlockState pState, Mirror pMirror) {
         return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
+
     @SuppressWarnings("deprecation")
     @Override
     public BlockState rotate(BlockState pState, Rotation pRotation) {
         return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
     }
+    // BlockEntity -V
 
-    @SuppressWarnings("deprecation")
+
+    @Override
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
+    }
+
     @Override
     public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof BoilerBlockEntity){
-                ((BoilerBlockEntity) blockEntity).drops();
+        if(pState.getBlock() != pNewState.getBlock()) {
+            BlockEntity bEntity = pLevel.getBlockEntity(pPos);
+            if(bEntity instanceof BoilerBlockEntity) {
+                ((BoilerBlockEntity) bEntity).drop();
             }
         }
+
         super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
 
-    // newBlockEntity(): called to assign a BlockEntity to a Block
+    @Override
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        if (!pLevel.isClientSide){
+            BlockEntity bEntity = pLevel.getBlockEntity(pPos);
+            if (bEntity instanceof BoilerBlockEntity) {
+                NetworkHooks.openGui(((ServerPlayer) pPlayer), ((BoilerBlockEntity) bEntity), pPos);
+            } else {
+                throw new IllegalStateException("Our Container Provider is missing!");
+            }
+        }
+
+        return InteractionResult.sidedSuccess(pLevel.isClientSide);
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new BoilerBlockEntity(pPos, pState);
     }
 
-    // don't know yet
-    @Override
-    public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
-    }
-
-    // this calls the tick() from the BlockEntity assigned to "this"
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
         return createTickerHelper(pBlockEntityType, InitBlockEntities.BRONZE_BOILER_ENTITY.get(),
-               BoilerBlockEntity::tick);
+                BoilerBlockEntity::tick);
     }
 }

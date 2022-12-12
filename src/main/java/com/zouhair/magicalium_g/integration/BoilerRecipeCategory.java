@@ -24,7 +24,7 @@ public class BoilerRecipeCategory implements IRecipeCategory<BoilerRecipe> {
 
     BoilerRecipeCategory(IGuiHelper guiHelper) {
         this.background = guiHelper.createDrawable(TEXTURE, 0, 0, 176, 85);
-        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(InitBlocks.BRONZE_BOILER.get()));
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(InitBlocks.BRONZE_BOILER.get()));
     }
     @Override
     public Component getTitle() {
@@ -51,9 +51,9 @@ public class BoilerRecipeCategory implements IRecipeCategory<BoilerRecipe> {
         return BoilerRecipe.class;
     }
 
-    @Override
+    /*@Override
     public void setRecipe(IRecipeLayoutBuilder builder, BoilerRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 30, 20).addIngredient(recipe.getIngredients().get(0));
+                builder.addSlot(RecipeIngredientRole.INPUT, 30, 20).addIngredient(recipe.getIngredients().get(0));
 
-    }
+    }*/
 }

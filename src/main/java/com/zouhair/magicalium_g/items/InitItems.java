@@ -1,6 +1,8 @@
 package com.zouhair.magicalium_g.items;
 
 import com.zouhair.magicalium_g.Magicalium_g;
+import com.zouhair.magicalium_g.fluids.InitFluids;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,6 +22,11 @@ public class InitItems {
     public static final RegistryObject<Item> IRON_HAMMER = ITEMS.register("iron_hammer",
             () -> new PickaxeItem(InitTiers.TIER_2, 2, 1.0f,
                     new Item.Properties().tab(InitTabs.MAGICALIUM_G_TOOL_TAB)));
+
+    // buckets
+    public static final RegistryObject<Item> STEAM_BUCKET = ITEMS.register("steam_bucket",
+            () -> new BucketItem(InitFluids.STEAM_FLUID,
+                    new Item.Properties().stacksTo(1).tab(InitTabs.MAGICALIUM_G_MATERIAL_TAB)));
 
     // materials
     public static final RegistryObject<Item> LIGNITE_COAL = ITEMS.register("lignite_coal",
